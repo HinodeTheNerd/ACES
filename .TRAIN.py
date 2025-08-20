@@ -11,10 +11,13 @@ aifile3=[]
 results=[]
 movements=[]
 printvalue=''
+ba=0
 t=int(input('how many evolutions are we doing? '))
 import random
 import json
 import time
+import matplotlib.pyplot as plt
+import numpy as np
 def DNAs(scores):
     global file1
     global file2
@@ -75,6 +78,7 @@ def evolve(DNA):
 def mutate(DNA):
     global results
     global printvalue
+    global average
     printvalue=str(round(sum(results)/len(results),1))
     for i in range(8):
         DNA1=list(DNA)
@@ -104,9 +108,9 @@ def train():
         p1=random.randrange(0,20)
         l.append(p1)
     for num in range(2):
-        l2=random.randrange(-11,20)
+        l2=random.randrange(-21,20)
         if l2<0:
-            l.append(0-l2)
+            l.append(l2)
             l3.append(l2)
         if l2>=0:
             l.append(l2)
@@ -152,8 +156,10 @@ def start(file):
             val+=(In1[i]*l[1])
             val+=(In2[i]*l[2])
             val+=(In3[i]*l[3])
+            val+=(In2[i]*l[4])
+            val+=(In3[i]*l[5])
         val=int(round(val,0))
-        while val > n and n!=0:
+        while val > n and n!=0 and n!=l[4] and n!=l[5]:
             val-=n
         if n==0:
             val=0
@@ -180,7 +186,7 @@ for one in range(1):
                 result=og_dist-result
                 result=result/og_dist
             else:
-                result=1.0
+                result=0.25
             result=max(0.0,min(1.0,result))
             result=(round(result,1))*10
             result=int(result)
@@ -194,6 +200,10 @@ for one in range(1):
         DNA=list(DNAs(results))
         evolve(DNA)
         print(results)
+        if average>=ba:
+            ba=average
+        print(str(average))
+        print(str(ba))
 bf=0
 with open('ACESbraincells1.json','r') as f:
     bf1=json.load(f)
