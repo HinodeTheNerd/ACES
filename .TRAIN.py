@@ -10,14 +10,14 @@ p=[]
 aifile3=[]
 results=[]
 movements=[]
+resultstotal=[]
+resultsaverage=0
 printvalue=''
 ba=0
 t=int(input('how many evolutions are we doing? '))
 import random
 import json
 import time
-import matplotlib.pyplot as plt
-import numpy as np
 def DNAs(scores):
     global file1
     global file2
@@ -43,11 +43,12 @@ def DNAs(scores):
         In4=[round(x,1) for x in json.load(f)]
     with open(file2,'r') as f:
         In5=[round(x,1) for x in json.load(f)]
-    i1=random.randrange(1,129)
+    i1=random.randrange(0,128)
     dnalist.append(i1)
-    while dnalist[0]==i1:
-        i1=random.randrange(1,17)
-    dnalist.append(i1)
+    for DNAs1 in range(63):
+        while dnalist[DNAs1]==i1:
+            i1=random.randrange(0,128)
+        dnalist.append(i1)
     i2=0
     for i in range(128):
         if i2<=1:
@@ -87,17 +88,17 @@ def mutate(DNA):
         average=sum(results)/len(results)
         average=round(average,1)
         s=10-average
-        s=s*10
+        s=s*2
         s=int(s)
         for i1 in range(s):
-            s2=random.randrange(0,129)
-            s1=round(float(random.randrange(-5,5)/((round(20/(11-average),1)+1))),1)
+            s2=random.randrange(0,128)
+            s1=round(float(random.randrange(-5,5)/5))
             s1=s1/10
-            DNA1[i1]=round(float(DNA1[i1])+float(s1),1)
-            while DNA1[i1]>9.9:
-                DNA1[i1]-=1.0
-            while DNA1[i1]<0.1:
-                DNA1[i1]+=1.0
+            DNA1[s2]=round(float(DNA1[s2])+float(s1),1)
+            while DNA1[s2]>0.9:
+                DNA1[s2]-=0.1
+            while DNA1[s2]<0.1:
+                DNA1[s2]+=0.1
     return DNA1
 def train():
     global l
@@ -199,11 +200,16 @@ for one in range(1):
                 movements.append(str(l3[james]))
         DNA=list(DNAs(results))
         evolve(DNA)
-        print(results)
+        resultstotal.append(average)
+        resultsaverage=float(sum(resultstotal)/len(resultstotal))
         if average>=ba:
             ba=average
-        print(str(average))
-        print(str(ba))
+        print(results)
+        print('total average: ', str(round(resultsaverage,1)))
+        print('batch average: ', str(average))
+        print('best batch average: ', str(ba))
+        print(len(resultstotal),'/',t)
+        print('\n')
 bf=0
 with open('ACESbraincells1.json','r') as f:
     bf1=json.load(f)
@@ -218,4 +224,5 @@ for ainum1 in range(10):
                 with open(aifile,'w') as f:
                     json.dump(bf1,f)
             bf=0
-                
+time.sleep(3)
+
